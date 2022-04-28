@@ -4,11 +4,6 @@ pipeline {
         APP_NAME = "jmgross.dev"
     }
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
         stage('Build') {
             steps {
                 script {
@@ -21,7 +16,7 @@ pipeline {
                 sh "docker stop ${APP_NAME} || true"
                 sh "docker rm ${APP_NAME} || true"
                 script {
-                    app.run("-d --name ${APP_NAME} --network proxy")
+                    app.run("--name ${APP_NAME} --network proxy")
                 }
             }
         }
