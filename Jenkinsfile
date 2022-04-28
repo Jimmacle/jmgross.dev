@@ -1,18 +1,26 @@
 pipeline {
     agent any
-    stages {
-        def appName = "jmgross.dev"
+    environment {
         def app
+        def appName = "jmgross.dev"
+    }
+    stages {
         stage('Checkout') {
-            checkout scm
+            steps {
+                checkout scm
+            }
         }
         stage('Build') {
-            app = docker.build("jimmacle/${appName}")
+            steps {
+                app = docker.build("jimmacle/${appName}")
+            }
         }
         stage('Deploy') {
-            sh "docker stop ${appName} || true"
-            sh "docker rm ${appName} || true"
-            app.run("-d --name ${appName} --network proxy")
+            steps {
+                sh "docker stop ${appName} || true"
+                sh "docker rm ${appName} || true"
+                app.run("-d --name ${appName} --network proxy")
+            }
         }
     }
 }
