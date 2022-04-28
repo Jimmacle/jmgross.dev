@@ -1,8 +1,7 @@
 pipeline {
     agent any
     environment {
-        def app
-        def appName = "jmgross.dev"
+        APP_NAME = "jmgross.dev"
     }
     stages {
         stage('Checkout') {
@@ -12,14 +11,18 @@ pipeline {
         }
         stage('Build') {
             steps {
-                app = docker.build("jimmacle/${appName}")
+                script {
+                    app = docker.build("jimmacle/${APP_NAME}")
+                }
             }
         }
         stage('Deploy') {
             steps {
-                sh "docker stop ${appName} || true"
-                sh "docker rm ${appName} || true"
-                app.run("-d --name ${appName} --network proxy")
+                sh "docker stop ${APP_NAME} || true"
+                sh "docker rm ${APP_NAME} || true"
+                script {
+                    app.run("-d --name ${APP_NAME} --network proxy")
+                }
             }
         }
     }
